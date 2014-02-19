@@ -37,8 +37,9 @@ class ToolSet(object):
         target_path = os.path.abspath(to_path)
 
         if template_path is None:
-            raise Exception("No Such Template")
+            raise Exception("No Such Template: {}".format(template_name))
         if os.path.exists(target_path):
             raise Exception("{} Already Existed.".format(target_path))
 
         shutil.copyfile(template_path, target_path, follow_symlinks=False)
+        return target_path
