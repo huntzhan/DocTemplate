@@ -40,7 +40,10 @@ def main():
 
     elif arguments['--list']:
         templates = list(toolset.avaliable_templates)
-        print('\t'.join(templates))
+        if not templates:
+            print('No Template Exist, Place Your Templates In ~/.doctpl')
+        else:
+            print('\t'.join(templates))
 
     elif arguments['--position']:
         print(toolset.dir_abs_path)

@@ -1,7 +1,10 @@
 # Usage
-
-	$ doctpl somedoc //init 'somedoc' with default template
-	$ doctpl //display all avaliable tmeplates.
-	$ doctpl -t template_name somedoc //init 'somedoc' with template named template_name
-	$ doctpl -l //display absolute path where templates exists
-	$ doctpl -l | cd //enter that location
+	Usage:
+	    doctpl -t <template> <file>...
+	    doctpl -l|--list
+	    doctpl -p|--position
+	
+	Options:
+	    -t <template>   init files with template.
+	    -l --list       list all avaliable templates.
+	    -p --position   print absolute path of where templates exists.

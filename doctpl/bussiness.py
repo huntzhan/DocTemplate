@@ -6,6 +6,8 @@ import shutil
 
 class _GLOBAL:
     DIR_PATH = os.path.expanduser('~/.doctpl')
+    if not os.path.exists(DIR_PATH):
+        os.mkdir(DIR_PATH)
 
 
 class ToolSet(object):
