@@ -18,11 +18,6 @@ from __future__ import print_function
 from docopt import docopt
 from bussiness import ToolSet
 
-# for test
-import os
-from bussiness import _GLOBAL
-_GLOBAL.DIR_PATH = os.path.abspath('./.doctpl')
-
 
 def main():
     arguments = docopt(

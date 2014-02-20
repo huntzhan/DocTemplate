@@ -17,7 +17,7 @@ class ToolSet(object):
     @property
     def avaliable_templates(self):
         """
-        Return:
+        return:
             dict of templates (file name, path) pairs.
         """
 
@@ -33,6 +33,8 @@ class ToolSet(object):
         parameters:
             to_path: target path entered in shell.
             template_name: file name of template.
+        return:
+            absolute path of target file.
         """
 
         template_path = self.avaliable_templates.get(template_name, None)
@@ -43,5 +45,7 @@ class ToolSet(object):
         if os.path.exists(target_path):
             raise Exception("{} Already Existed.".format(target_path))
 
-        shutil.copyfile(template_path, target_path, follow_symlinks=False)
+        # symbolic link should not be use.
+        shutil.copyfile(template_path, target_path)
+
         return target_path
