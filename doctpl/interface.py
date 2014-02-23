@@ -14,15 +14,16 @@ Options:
 
 from __future__ import unicode_literals
 from __future__ import print_function
+from __future__ import absolute_import
 
 from docopt import docopt
-from bussiness import ToolSet
+from doctpl.bussiness import ToolSet
 
 
 def main():
     arguments = docopt(
         __doc__,
-        version='0.1',
+        version='0.1.1',
     )
 
     toolset = ToolSet()

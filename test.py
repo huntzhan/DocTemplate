@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 import os
 import unittest
-from bussiness import _GLOBAL, ToolSet
+from doctpl.bussiness import _GLOBAL, ToolSet
 
 
 class ToolSetTest(unittest.TestCase):
