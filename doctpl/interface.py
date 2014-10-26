@@ -2,7 +2,7 @@
 
 """
 Usage:
-    doctpl -t <template> <file>...
+    doctpl -t <template> <destination>
     doctpl -l|--list
     doctpl -p|--position
 
@@ -17,37 +17,40 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 from docopt import docopt
-from doctpl.bussiness import ToolSet
+from doctpl.core import TemplateInfo
 
 
 def main():
     arguments = docopt(
         __doc__,
-        version='0.1.1',
+        version='0.1.2',
     )
+    TemplateInfo.setup()
 
-    toolset = ToolSet()
-
-    if arguments['<file>']:
+    if arguments['<destination>']:
         # copy template
         template_name = arguments['-t']
-        targets = arguments['<file>']
-        for target in targets:
-            try:
-                toolset.make_copy(target, template_name)
-            except Exception as e:
-                info = str(e)
-                print(info)
+        rel_dst_path = arguments['<destination>']
+        template_object = TemplateInfo.template_objects.get(template_name)
+
+        if template_object is None:
+            print("No such template.")
+            return
+        try:
+            template_object.copy_to(rel_dst_path)
+        except Exception as e:
+            print(str(e))
 
     elif arguments['--list']:
-        templates = list(toolset.avaliable_templates)
-        if not templates:
-            print('No Template Exist, Place Your Templates In ~/.doctpl')
+        template_names = TemplateInfo.template_objects.keys()
+        if template_names:
+            print('\t'.join(template_names))
         else:
-            print('\t'.join(templates))
+            print('No Template Exist.'
+                  'Please place Your Templates In ~/.doctpl')
 
     elif arguments['--position']:
-        print(toolset.dir_abs_path)
+        print(TemplateInfo.CONFIG_DIR)
 
 
 if __name__ == '__main__':

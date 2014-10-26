@@ -1,61 +1,64 @@
 from __future__ import unicode_literals
 
 import os
+import shutil
 import unittest
-from doctpl.bussiness import _GLOBAL, ToolSet
+from doctpl.core import TemplateInfo
 
 
-class ToolSetTest(unittest.TestCase):
-
-    def setUp(self):
-        _GLOBAL.DIR_PATH = os.path.join(os.getcwd(), '.doctpl')
-        self.toolset = ToolSet()
-
-    def test_dir_abs_path(self):
-        self.assertEqual(
-            self.toolset.dir_abs_path,
-            os.path.join(os.getcwd(), '.doctpl'),
+class TemplateInfoTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        # setup TemplateInfo.
+        TemplateInfo.CONFIG_DIR = os.path.join(os.getcwd(), '.doctpl')
+        TemplateInfo.setup()
+        # mkdir testdir.
+        cls.testdir = os.path.join(
+            TemplateInfo.CONFIG_DIR,
+            'testdir',
         )
+        os.mkdir(cls.testdir)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.testdir)
 
     def test_avaliable_templates(self):
         self.assertEqual(
-            set(self.toolset.avaliable_templates),
+            set(TemplateInfo.template_objects),
             {'template_a', 'template_b'},
         )
 
     def test_copy_for_not_existed_file(self):
-        target_not_exist = os.path.join(_GLOBAL.DIR_PATH,
-                                        'testdir/not_exist')
+        target_not_exist = os.path.join(
+            self.testdir,
+            'not_exist',
+        )
         if os.path.exists(target_not_exist):
             os.remove(target_not_exist)
 
-        path = self.toolset.make_copy('./.doctpl/testdir/not_exist',
-                                      'template_a')
+        template_object = TemplateInfo.template_objects['template_a']
+        path = template_object.copy_to('./.doctpl/testdir/not_exist')
 
         self.assertEqual(path, target_not_exist)
-        self.assertEqual(
-            open(path, 'r').read(),
-            "template_a's content.\n",
-        )
+        with open(path, 'r') as f:
+            self.assertEqual(
+                f.read(),
+                "template_a's content.\n",
+            )
 
     def test_copy_for_existed_file(self):
-        target_exist = os.path.join(_GLOBAL.DIR_PATH, 'testdir/exist')
+        target_exist = os.path.join(
+            self.testdir, 'exist')
+        # create empty file.
         open(target_exist, 'w').close()
 
+        template_object = TemplateInfo.template_objects['template_a']
         with self.assertRaises(Exception) as context:
-            self.toolset.make_copy('./.doctpl/testdir/exist', 'template_a')
+            template_object.copy_to('./.doctpl/testdir/exist')
 
         self.assertIn(
             'Already Existed',
-            ''.join(context.exception.args),
-        )
-
-    def test_copy_no_such_template(self):
-        with self.assertRaises(Exception) as context:
-            self.toolset.make_copy('./.doctpl/testdir/exist', 'template_c')
-
-        self.assertIn(
-            'No Such Template',
             ''.join(context.exception.args),
         )
 
